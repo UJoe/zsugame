@@ -1,0 +1,26 @@
+@font-face {
+  font-family: Oldenburg;
+  src: url("./Oldenburg-Regular.ttf");
+}
+
+body {
+  font-family: Oldenburg;
+  background-color: #aa80bb;
+  color: blue;
+  font-size: 0.9rem;
+  outline: none;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  user-select: none;
+}
+
+p,
+#main {
+  line-height: 1.7;
+}
+
+#main {
+  margin-top: 75px;
+}
