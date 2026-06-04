@@ -1,4 +1,9 @@
 function _load() {
+  let el = (id) => document.getElementById(id);
+  let rnd = (arr) => arr[Math.floor(Math.random() * arr.length)];
+  let checkItem = (arr, it) => arr.indexOf(it) > -1;
+  let getObj = (arr, prop, it) => arr[arr.findIndex((a) => a[prop] === it)];
+  let getObjs = (arr, prop, it) => arr.filter((a) => a[prop] === it);
 
   function mineAct() {
     music.volume = mv > 0.6 ? 0.6 : mv;
@@ -197,8 +202,18 @@ function _load() {
     }
   }
 
+  function clickAct(e) {
+    let teljesszó = e.target.id.split("_");
+    let bType = teljesszó[0];
+    let bId = "";
+    if (teljesszó.length > 1) bId = teljesszó[1];
+    console.log('teljesszó: ', teljesszó);
+
+  }
+
   //START
-  document.body.requestFullscreen();
+  document.addEventListener("click", clickAct);
+  //document.body.requestFullscreen();
 }
 
 window.addEventListener("load", _load);

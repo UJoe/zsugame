@@ -5,9 +5,9 @@
 
 body {
   font-family: Oldenburg;
-  background-color: #aa80bb;
+  background-color: lightpink;
   color: blue;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   outline: none;
   margin: 0;
   padding: 0;
@@ -16,11 +16,55 @@ body {
   user-select: none;
 }
 
-p,
-#main {
-  line-height: 1.7;
-}
-
 #main {
   margin-top: 75px;
+}
+
+h1 {
+  text-align: center;
+  color: red;
+  filter: blur(1px);
+  filter: drop-shadow(0 16px 20px blue);
+  font-size: 6vw;
+}
+
+h2 {
+  text-align: center;
+  color: blue;
+  filter: drop-shadow(0 4px 5px royalblue);
+  font-size: 4vw;
+}
+
+#tBtns {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-direction: column;
+  margin: .5vh auto;
+}
+
+.tBtn {
+  flex-grow: 1;
+  margin: 1vh 5vw;
+  height: 8vh;
+  width: 25vw;
+  padding: 5px;
+  color: orangered;
+  background-color: darkblue;
+  border: outset 2px turquoise;
+  border-radius: 10px;
+  opacity: 1;
+  outline: none;
+  font-size: min(3vw, 1em);
+}
+
+.tBtn:active {
+  background-color: rgb(22, 22, 80);
+  border: inset 2px turquoise;
+}
+
+.tBtn:disabled {
+  color: darkslateblue;
+  background-color: darkslategray;
+  opacity: .5;
 }
