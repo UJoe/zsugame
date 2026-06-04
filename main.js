@@ -4,10 +4,49 @@ function _load() {
   let checkItem = (arr, it) => arr.indexOf(it) > -1;
   let getObj = (arr, prop, it) => arr[arr.findIndex((a) => a[prop] === it)];
   let getObjs = (arr, prop, it) => arr.filter((a) => a[prop] === it);
+  let lvl = [1, 1, 1];
+  let score = [0, 0, 0];
+  let rekord = [0, 0, 0];
+  if (localStorage.getItem("records")) {
+    let records = localStorage.getItem("records").split(",");
+    for (let i = 0; i < records.length; i++) {
+      rekord[i] = parseInt(records[i]);
+    }
+  }
+  if (localStorage.getItem("levels")) {
+    let szintek = localStorage.getItem("levels").split(",");
+    for (let i = 0; i < szintek.length; i++) {
+      lvl[i] = parseInt(szintek[i]);
+    }
+  }
+
+  function message(text) {
+    document.querySelector("body").style.overflow = "hidden";
+    const m = el("message");
+    m.innerHTML = text;
+    m.classList.remove("disappear");
+    m.classList.add("pear");
+    clearTimeout(timesIn);
+    clearTimeout(timesOut);
+    timesIn = setTimeout(() => {
+      m.classList.remove("pear");
+      m.classList.add("appear");
+    }, 1);
+    timesOut = setTimeout(() => {
+      m.classList.remove("appear");
+      m.classList.add("disappear");
+      document.querySelector("body").style.overflow = "auto";
+    }, text.length * 55 + 1200);
+  }
 
   function mineAct() {
-    music.volume = mv > 0.6 ? 0.6 : mv;
-    let s = room.size;
+    let level = lvl[0];
+    let zs = 1 + Math.floor(Math.random() * 8);
+    let s = 2 + level * 2; //4, 6, 8 => 16, 36, 64
+    let room = {
+      kincs: Math.pow(level, 3) + level * 2, //3, 12, 33
+      akna: level * 5, //5, 10, 15 => 8/16, 22/36, 48/64
+    }
     var field = [];
     for (let x = 0; x < s; x++) {
       field.push([]);
@@ -33,80 +72,64 @@ function _load() {
         numera++;
       }
     } while (numera < room.akna);
-    let digs = Math.round(char.ero / 2);
+    let digs = Math.round(s * s - level * 2);
     //let pic = ["gyep.jpg", "pearl.png", "akna.png"]; pic[field[col][row][1]]
     let kincsHit = 0;
     let aknaHit = 0;
     let firstEnd = true;
 
     function updateMScore() {
-      document.getElementById("scoresM").innerHTML = `
+      el("scoresM").innerHTML = `
             <span class="score">Energia: <span class="red">${digs}</span></span> 
-            <span class="score">Kincs: <span class="lime">${kincsHit}</span>/${room.kincs}</span> 
+            <span class="score">Zsuzsi: <span class="lime">${kincsHit}</span>/${room.kincs}</span> 
             <span class="score">Akna: <span class="lime">${aknaHit}</span>/${room.akna}</span>
           `;
       let finish = false;
 
       if (firstEnd) {
         if (kincsHit == room.kincs) {
-          message("Minden kincset megtaláltál!");
+          message("Minden Zsuzsit megtaláltál!");
           finish = true;
-          let bonus =
+          score[0] =
             5 +
             Math.round(
-              room.size * 2 +
+              s * 2 +
               room.akna * 2.5 -
               room.kincs / 2 +
-              Math.random() * 5 +
-              (room.size * (room.size - 1) - digs) / 2 +
+              (s * (s - 1) - digs) / 2 +
               kincsHit / 1.5 -
               aknaHit
-            );
-          changeVal("sup", bonus);
-          changeVal("hat", 1);
-          changeVal("esz", 1 + Math.floor(bonus / 4));
-          changeVal("ugy", Math.floor(bonus / 4));
-          char.room = room.pass;
-          if (room.help) {
-            changeVal("lel", 1 + Math.round(bonus / 3));
-          }
+            ) * level;
+          //TODO: level ugrás?
         } else if (digs < 1) {
-          message("Nem bírod tovább, kidöglöttél!");
+          message("Elfogyott az energiád!");
           finish = true;
-          let bonus = Math.round(
-            room.size * 1.5 +
+          score[0] = Math.round(
+            s * 1.5 +
             room.akna * 2 -
             room.kincs -
-            Math.random() * 5 +
-            Math.random() * 5 -
             (room.kincs - kincsHit) * 2 +
             kincsHit -
             aknaHit
           );
-          changeVal("sup", bonus);
-          changeVal("hat", -1);
-          char.room = room.med;
         }
+        //TODO:checkrecord
         if (finish) {
-          if (room.help) modi = room.help.split("_")[1];
-          if (room.modi) modi = room.modi;
           firstEnd = false;
           document.querySelectorAll(".minefield").forEach((i) => i.removeEventListener("click", pressMine));
-          document.getElementById("exitBtn").disabled = true;
+          el("exitBtn").disabled = true;
           setTimeout(() => {
-            newRoom();
+            //TODO:finishedMine();
           }, 4500);
         }
       }
     }
 
     function fleeM() {
-      if (room.help) modi = room.help.split("_")[1];
-      char.room = room.fail;
-      newRoom();
+      //TODO:backbutton;
     }
 
-    document.getElementById("subMain").innerHTML = `
+    el("main").innerHTML = `
           <div id="subHeader">
             <span id="scoresM"></span>
             <button id="exitBtn" title="Gyáva!">Feladom!</button> 
@@ -114,26 +137,26 @@ function _load() {
           <table id="garden"></table>
         `;
     let gardenStr = "<tr>";
-    let name = char.name.split(",")[0];
     for (let row = 0; row < s; row++) {
       for (let col = 0; col < s; col++) {
         gardenStr += `
               <td class="minefieldCard" id="mfc-${col}-${row}"}> 
                 <img
-                    class="minefield"
-                    id="mf-${col}-${row}"
-                    src="./img/rooms/gyep.jpg"
-                    title="Keress csak, ${name}!"
+                  class="minefield"
+                  id="mf-${col}-${row}"
+                  src="./img/gyep.jpg"
                 />
               </td>
             `;
       }
       gardenStr += "</tr>";
     }
-    document.getElementById("garden").innerHTML = gardenStr;
+    el("garden").innerHTML = gardenStr;
     updateMScore();
+    //CONT.
+    //TODO: ezt majd a globalban
     document.querySelectorAll(".minefield").forEach((i) => i.addEventListener("click", pressMine));
-    document.getElementById("exitBtn").addEventListener("click", fleeM);
+    el("exitBtn").addEventListener("click", fleeM);
 
     function pressMine(e) {
       let mineX = Number(e.target.id.split("-")[1]);
@@ -165,7 +188,7 @@ function _load() {
               }
             }
           }
-          document.getElementById("mfc-" + mineX + "-" + mineY).innerHTML = `
+          el("mfc-" + mineX + "-" + mineY).innerHTML = `
                 <span class="near">
                   <span class="kincsHits">${nearKincs}</span>
                   <span> / </span>
@@ -178,8 +201,8 @@ function _load() {
           sound.src = "./audio/pearl.mp3";
           sound.play();
           kincsHit++;
-          document.getElementById("mf-" + mineX + "-" + mineY).src = "./img/rooms/" + room.treasure;
-          document.getElementById("mf-" + mineX + "-" + mineY).title = "Drágaságom!";
+          el("mf-" + mineX + "-" + mineY).src = "./img/rooms/" + room.treasure;
+          el("mf-" + mineX + "-" + mineY).title = "Drágaságom!";
           updateMScore();
           break;
 
@@ -187,8 +210,8 @@ function _load() {
           sound.src = "./audio/bomb.mp3";
           sound.play();
           aknaHit++;
-          document.getElementById("mf-" + mineX + "-" + mineY).src = "./img/rooms/akna.png";
-          document.getElementById("mf-" + mineX + "-" + mineY).title = "Ez jó nagyot szólt!";
+          el("mf-" + mineX + "-" + mineY).src = "./img/rooms/akna.png";
+          el("mf-" + mineX + "-" + mineY).title = "Ez jó nagyot szólt!";
           let loser = Math.floor(21 + Math.random() * (20 - char.ugy / 5) - char.ugy / 5);
           changeVal("ero", -loser);
           updateMScore();
@@ -207,8 +230,14 @@ function _load() {
     let bType = teljesszó[0];
     let bId = "";
     if (teljesszó.length > 1) bId = teljesszó[1];
-    console.log('teljesszó: ', teljesszó);
+    switch (bType) {
+      case "mineStart":
+        mineAct();
+        break;
 
+      default:
+        break;
+    }
   }
 
   //START

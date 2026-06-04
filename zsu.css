@@ -68,3 +68,119 @@ h2 {
   background-color: darkslategray;
   opacity: .5;
 }
+
+#subHeader {
+  padding: 10px;
+  height: fit-content;
+  width: 90vw;
+  margin: 5px auto;
+  background-color: purple;
+  color: yellow;
+  border: solid 2px black;
+  border-radius: 10px;
+}
+
+#scores {
+  width: 400px;
+  max-width: 70vw;
+  margin: 0 30px 20px;
+  font-size: 1em;
+  background-image: linear-gradient(to right, black, purple, red, purple, black);
+}
+
+
+.score {
+  margin-left: 25px;
+}
+
+#exitBtn {
+  float: right;
+  padding: 4px 20px;
+  margin-right: 10px;
+  background-color: yellow;
+  color: black;
+  outline: none;
+  border: solid 2px darkblue;
+  border-radius: 5px;
+}
+
+#exitBtn:active {
+  filter: invert(1);
+}
+
+#exitBtn:disabled {
+  filter: grayscale(80%);
+}
+
+#garden {
+  width: fit-content;
+  margin: 15px auto;
+}
+
+.minefield {
+  width: 53px;
+  height: 53px;
+  margin: auto;
+  padding: 0;
+  border-radius: 5px;
+}
+
+.minefieldCard {
+  display: inline-block;
+  width: 54px;
+  height: 54px;
+  padding: 1px;
+  border: solid 1px white;
+  border-radius: 5px;
+  background-color: green;
+}
+
+.dirtCard {
+  display: inline-block;
+  width: 60px;
+  height: 60px;
+  padding: 0;
+  border: solid 1px darkslategray;
+  background-color: black;
+}
+
+.dirt {
+  width: 59px;
+  height: 59px;
+  margin: 0;
+  padding: 0;
+}
+
+.aknaHits {
+  color: red;
+}
+
+.kincsHits {
+  color: cyan;
+}
+
+.aknaHits {
+  color: red;
+}
+
+.kincsHits {
+  color: cyan;
+}
+
+.pear {
+  transition: none;
+  filter: opacity(0) blur(5px);
+  left: 100%;
+}
+
+.appear {
+  transition: all 1s ease-out;
+  filter: opacity(1) blur(0);
+  left: 0;
+}
+
+.disappear {
+  transition: all 2.2s ease-out;
+  filter: opacity(0) blur(5px);
+  left: -80%;
+}
