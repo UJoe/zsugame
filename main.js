@@ -5,7 +5,7 @@ function _load() {
   let getObj = (arr, prop, it) => arr[arr.findIndex((a) => a[prop] === it)];
   let getObjs = (arr, prop, it) => arr.filter((a) => a[prop] === it);
   let lvl = [1, 1, 1];
-  let score = [0, 0, 0];
+  let score = 0;
   let rekord = [0, 0, 0];
   if (localStorage.getItem("records")) {
     let records = localStorage.getItem("records").split(",");
@@ -41,6 +41,7 @@ function _load() {
 
   function mineAct() {
     let level = lvl[0];
+    let steps = 0;
     let zs = 1 + Math.floor(Math.random() * 8);
     let s = 2 + level * 2; //4, 6, 8 => 16, 36, 64
     let room = {
@@ -72,78 +73,56 @@ function _load() {
         numera++;
       }
     } while (numera < room.akna);
-    let digs = Math.round(s * s - level * 2);
     //let pic = ["gyep.jpg", "pearl.png", "akna.png"]; pic[field[col][row][1]]
     let kincsHit = 0;
     let aknaHit = 0;
     let firstEnd = true;
 
     function updateMScore() {
-      el("scoresM").innerHTML = `
-            <span class="score">Energia: <span class="red">${digs}</span></span> 
-            <span class="score">Zsuzsi: <span class="lime">${kincsHit}</span>/${room.kincs}</span> 
-            <span class="score">Akna: <span class="lime">${aknaHit}</span>/${room.akna}</span>
-          `;
+      el("subHeader").innerHTML = `
+          <span class="score">Zsuzsi: <span class="lime">${kincsHit}</span>/${room.kincs}</span> 
+          <span class="score">Akna: <span class="lime">${aknaHit}</span>/${room.akna}</span>
+          <span class="score">Pont: <span id="ms" class="red">${score}</span></span> 
+        `;
       let finish = false;
 
       if (firstEnd) {
         if (kincsHit == room.kincs) {
-          message("Minden Zsuzsit megtaláltál!");
+          //message("Minden Zsuzsit megtaláltál!");
           finish = true;
-          score[0] =
-            5 +
-            Math.round(
-              s * 2 +
-              room.akna * 2.5 -
-              room.kincs / 2 +
-              (s * (s - 1) - digs) / 2 +
-              kincsHit / 1.5 -
-              aknaHit
-            ) * level;
+          let bonus = 10 + (s * s - steps - aknaHit * 3) * level;
+          if (bonus < level * 5) bonus = level * 5;
+          score += bonus;
+          el("ms").innerHTML = score;
+
           //TODO: level ugrás?
-        } else if (digs < 1) {
-          message("Elfogyott az energiád!");
-          finish = true;
-          score[0] = Math.round(
-            s * 1.5 +
-            room.akna * 2 -
-            room.kincs -
-            (room.kincs - kincsHit) * 2 +
-            kincsHit -
-            aknaHit
-          );
         }
         //TODO:checkrecord
         if (finish) {
           firstEnd = false;
           document.querySelectorAll(".minefield").forEach((i) => i.removeEventListener("click", pressMine));
-          el("exitBtn").disabled = true;
           setTimeout(() => {
             //TODO:finishedMine();
           }, 4500);
         }
       }
     }
-
-    function fleeM() {
-      //TODO:backbutton;
-    }
-
+    el("header").innerHTML = `
+      <h2>ZSUZSIKERESŐ</h2>
+    `;
     el("main").innerHTML = `
-          <div id="subHeader">
-            <span id="scoresM"></span>
-            <button id="exitBtn" title="Gyáva!">Feladom!</button> 
-          </div>
-          <table id="garden"></table>
-        `;
+        <div id="subHeader">
+        </div>
+        <table id="garden"></table>
+      `;
     let gardenStr = "<tr>";
     for (let row = 0; row < s; row++) {
       for (let col = 0; col < s; col++) {
         gardenStr += `
-              <td class="minefieldCard" id="mfc-${col}-${row}"}> 
+              <td class="minefieldCard" id="mfc_${col}-${row}"}> 
                 <img
                   class="minefield"
-                  id="mf-${col}-${row}"
+                  id="mf_${col}-${row}"
                   src="./img/gyep.jpg"
                 />
               </td>
@@ -152,16 +131,18 @@ function _load() {
       gardenStr += "</tr>";
     }
     el("garden").innerHTML = gardenStr;
+    document.querySelectorAll(".minefield").forEach((i) => i.addEventListener("click", pressMine));
     updateMScore();
     //CONT.
     //TODO: ezt majd a globalban
-    document.querySelectorAll(".minefield").forEach((i) => i.addEventListener("click", pressMine));
-    el("exitBtn").addEventListener("click", fleeM);
+
 
     function pressMine(e) {
-      let mineX = Number(e.target.id.split("-")[1]);
-      let mineY = Number(e.target.id.split("-")[2]);
-      if (field[mineX][mineY][0] === true || char.ero < 1) return;
+      let ms = e.target.id.split("_")[1];
+      console.log('ms: ', ms);
+      let mineX = Number(ms.split("-")[0]);
+      let mineY = Number(ms.split("-")[1]);
+      if (field[mineX][mineY][0] === true) return;
       let nearAkna = 0;
       let nearKincs = 0;
       field[mineX][mineY][0] = true;
@@ -188,7 +169,7 @@ function _load() {
               }
             }
           }
-          el("mfc-" + mineX + "-" + mineY).innerHTML = `
+          el("mfc_" + mineX + "-" + mineY).innerHTML = `
                 <span class="near">
                   <span class="kincsHits">${nearKincs}</span>
                   <span> / </span>
@@ -201,8 +182,8 @@ function _load() {
           sound.src = "./audio/pearl.mp3";
           sound.play();
           kincsHit++;
-          el("mf-" + mineX + "-" + mineY).src = "./img/rooms/" + room.treasure;
-          el("mf-" + mineX + "-" + mineY).title = "Drágaságom!";
+          el("mf_" + mineX + "-" + mineY).src = "./img/zs" + zs + ".jpg";
+          score += level;
           updateMScore();
           break;
 
@@ -210,17 +191,15 @@ function _load() {
           sound.src = "./audio/bomb.mp3";
           sound.play();
           aknaHit++;
-          el("mf-" + mineX + "-" + mineY).src = "./img/rooms/akna.png";
-          el("mf-" + mineX + "-" + mineY).title = "Ez jó nagyot szólt!";
-          let loser = Math.floor(21 + Math.random() * (20 - char.ugy / 5) - char.ugy / 5);
-          changeVal("ero", -loser);
+          el("mf_" + mineX + "-" + mineY).src = "./img/akna.png";
+          score -= level * 2;
           updateMScore();
           break;
 
         default:
           break;
       }
-      digs--;
+      steps++;
       updateMScore();
     }
   }
@@ -234,6 +213,10 @@ function _load() {
       case "mineStart":
         mineAct();
         break;
+
+      /* case "mf":
+        pressMine(bId);
+        break; */
 
       default:
         break;
