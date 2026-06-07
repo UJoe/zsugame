@@ -19,34 +19,65 @@ function _load() {
       lvl[i] = parseInt(szintek[i]);
     }
   }
+  let music = el("music");
+  let sound = el("sound");
+  let timo;
+  music.volume = 0.3;
+  sound.volume = 0.5;
+  let musicOn = true;
+  let soundOn = true;
 
-  function message(text) {
-    document.querySelector("body").style.overflow = "hidden";
-    const m = el("message");
-    m.innerHTML = text;
-    m.classList.remove("disappear");
-    m.classList.add("pear");
-    clearTimeout(timesIn);
-    clearTimeout(timesOut);
-    timesIn = setTimeout(() => {
-      m.classList.remove("pear");
-      m.classList.add("appear");
-    }, 1);
-    timesOut = setTimeout(() => {
-      m.classList.remove("appear");
-      m.classList.add("disappear");
-      document.querySelector("body").style.overflow = "auto";
-    }, text.length * 55 + 1200);
+  function message(txt) {
+    happen.classList.remove("nosee");
+    happen.classList.add("see");
+    let msgStr = `
+      <div id="mescard">
+        <p>${txt}</p>
+        <div id="mesBtns">
+          <button class="mesBtn" id="back">OK</button>
+        </div>
+      </div>`;
+    happen.innerHTML = msgStr;
+    el("back").addEventListener("click", () => {
+      happen.classList.remove("see");
+      happen.classList.add("nosee");
+    });
+  }
+
+  function restart() {
+    el("happen").innerHTML = "";
+    el("header").innerHTML = "";
+    el("main").innerHTML = "";
+    el("opening").innerHTML = `<h1>ZSUGAME</h1>>
+    <h2>Mivel akarsz játszani?</h2>
+    <div id="tBtns">
+      <button class="tBtn" id="mineStart">Zsuzsikereső</button>
+      <button class="tBtn" id="memStart">Zsuzsimemo</button>
+      <button class="tBtn" id="matchStart">Zsuzsimatch</button>
+    </div>`;
+    music.src = "./audio/love.mp3";
+    music.play();
+    el("mineStart").addEventListener("click", mineAct);
+    el("memStart").addEventListener("click", () => {
+      message("Hamarosan...");
+    });
+    el("matchStart").addEventListener("click", () => {
+      message("Hamarosan...");
+    });
   }
 
   function mineAct() {
+    document.body.requestFullscreen();
+    el("opening").innerHTML = "";
+    music.src = "./audio/music1.mp3";
+    music.play();
     let level = lvl[0];
     let steps = 0;
     let zs = 1 + Math.floor(Math.random() * 8);
     let s = 2 + level * 2; //4, 6, 8 => 16, 36, 64
     let room = {
-      kincs: Math.pow(level, 3) + level * 2, //3, 12, 33
-      akna: level * 5, //5, 10, 15 => 8/16, 22/36, 48/64
+      kincs: Math.pow(level, 2) + level * 2, //3, 8, 15
+      akna: level * 3, //3, 6, 9 => 6/16, 14/36, 24/64
     }
     var field = [];
     for (let x = 0; x < s; x++) {
@@ -88,14 +119,12 @@ function _load() {
 
       if (firstEnd) {
         if (kincsHit == room.kincs) {
-          //message("Minden Zsuzsit megtaláltál!");
           finish = true;
           let bonus = 10 + (s * s - steps - aknaHit * 3) * level;
           if (bonus < level * 5) bonus = level * 5;
           score += bonus;
           el("ms").innerHTML = score;
-
-          //TODO: level ugrás?
+          message(`<p>Gratulálok! Sikerült megtalálnod a ${room.kincs} kincset ${steps} lépésből, és elkerülni ${room.akna - aknaHit} aknát!</p><p>A pontszámod: ${score} (bónusz: ${bonus})</p>`);
         }
         //TODO:checkrecord
         if (finish) {
@@ -204,28 +233,8 @@ function _load() {
     }
   }
 
-  function clickAct(e) {
-    let teljesszó = e.target.id.split("_");
-    let bType = teljesszó[0];
-    let bId = "";
-    if (teljesszó.length > 1) bId = teljesszó[1];
-    switch (bType) {
-      case "mineStart":
-        mineAct();
-        break;
-
-      /* case "mf":
-        pressMine(bId);
-        break; */
-
-      default:
-        break;
-    }
-  }
-
   //START
-  document.addEventListener("click", clickAct);
-  //document.body.requestFullscreen();
+  restart();
 }
 
 window.addEventListener("load", _load);

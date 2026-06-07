@@ -26,6 +26,7 @@ h1 {
   filter: blur(1px);
   filter: drop-shadow(0 16px 20px blue);
   font-size: 6vw;
+  margin-bottom: 0;
 }
 
 h2 {
@@ -183,20 +184,67 @@ h2 {
   line-height: 53px;
 }
 
-.pear {
-  transition: none;
-  filter: opacity(0) blur(5px);
-  left: 100%;
+.nosee {
+	display: none;
+	height: 0;
+	width: 0;
+	z-index: 0;
+	opacity: 0;
 }
 
-.appear {
-  transition: all 1s ease-out;
-  filter: opacity(1) blur(0);
-  left: 0;
+.see {
+	display: flex;
+	height: 100vh;
+	width: 100vw;
+	z-index: 999;
+	opacity: 0.8;
+	background-color: whitesmoke;
+	justify-content: center;
+	align-items: center;
+	position: fixed;
+	top: 0;
+	left: 0;
 }
 
-.disappear {
-  transition: all 2.2s ease-out;
-  filter: opacity(0) blur(5px);
-  left: -80%;
+#mescard {
+	width: fit-content;
+	max-width: 70vw;
+	height: fit-content;
+	max-height: 70vh;
+	font-size: max(1.4vw, 1.1em);
+	opacity: 1 !important;
+	background-color: darkslategray;
+	z-index: 9998;
+	border: cyan outset 5px;
+	border-radius: 10px;
+	overflow: auto;
+}
+
+#mescard p {
+	color: lightyellow;
+	text-align: justify;
+}
+
+#mesBtns {
+	display: flex;
+	justify-content: space-evenly;
+	margin: 1vh 0;
+}
+
+.kerBtn,
+.mesBtn {
+	flex-grow: 1;
+	margin: 0 5vw;
+	height: fit-content;
+	min-height: 35px;
+	padding: 5px;
+	color: orangered;
+	background-color: darkblue;
+	border: outset 2px turquoise;
+	border-radius: 10px;
+	opacity: 1;
+	outline: none;
+	font-size: min(2.5vw, 1em);
+	width: fit-content;
+	max-width: 20vw;
 }
