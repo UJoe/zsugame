@@ -1,13 +1,27 @@
 function _load() {
   let el = (id) => document.getElementById(id);
   let rnd = (arr) => arr[Math.floor(Math.random() * arr.length)];
+  let kever = (arr) => {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  };
+  let inic = (txt) => txt.charAt(0).toUpperCase() + txt.slice(1);
+
+  let checkItemDeep = (arr, prop, it) => arr.findIndex((a) => a[prop] === it) > -1;
+
   let checkItem = (arr, it) => arr.indexOf(it) > -1;
   let getObj = (arr, prop, it) => arr[arr.findIndex((a) => a[prop] === it)];
   let getObjs = (arr, prop, it) => arr.filter((a) => a[prop] === it);
-  let inic = (txt) => txt.charAt(0).toUpperCase() + txt.slice(1);
 
   let lvl = [1, 1, 1];
-  let nextl = [[20, 40, 60], [20, 40, 60], [20, 40, 60]];
+  let nextl = [
+    [20, 40, 60],
+    [20, 40, 60],
+    [20, 40, 60],
+  ];
   const nlname = ["kezdő", "haladó", "mester"];
   let score = 0;
   let rekord = [0, 0, 0];
@@ -36,9 +50,9 @@ function _load() {
       sound.src = "./audio/" + src + ".mp3";
       sound.play();
     }
-   }
-   
-   function message(txt) {
+  }
+
+  function message(txt) {
     happen.classList.remove("nosee");
     happen.classList.add("see");
     let msgStr = `
@@ -64,9 +78,9 @@ function _load() {
     el("opening").innerHTML = `<h1>ZSUGAME</h1>>
     <h2>Mivel akarsz játszani?</h2>
     <div id="tBtns">
-      <button class="tBtn" id="mineStart">Zsuzsikereső<br>(${nlname[lvl[0]-1]})</button>
-      <button class="tBtn" id="memStart">Zsuzsimemo<br>(${nlname[lvl[1]-1]})</button>
-      <button class="tBtn" id="matchStart">Zsuzsimatch<br>(${nlname[lvl[2]-1]})</button>
+      <button class="tBtn" id="mineStart">Zsuzsikereső<br>(${nlname[lvl[0] - 1]})</button>
+      <button class="tBtn" id="memStart">Zsuzsimemo<br>(${nlname[lvl[1] - 1]})</button>
+      <button class="tBtn" id="matchStart">Zsuzsimatch<br>(${nlname[lvl[2] - 1]})</button>
     </div>`;
     music.src = "./audio/love.mp3";
     music.play();
@@ -75,6 +89,25 @@ function _load() {
     el("matchStart").addEventListener("click", () => {
       message("Hamarosan...");
     });
+  }
+
+  function xtrascore(score, game) {
+    let rt = "";
+    if (score > rekord[game]) {
+      rekord[game] = score;
+      localStorage.setItem("records", rekord.join());
+      rt += `<p>Új rekord, gratula!!!</p>`;
+    }
+    nl = nextl[game][lvl[game] - 1];
+    if (score < nl) {
+      let nl = nextl[game][lvl[game] - 1];
+      rt += `<p>A következő (${nlname[lvl[game]]}) szintre ${nl} ponttal juthatsz el.</p>`;
+    } else {
+      rt += `<p>Ezzel elérted a következő (${nlname[lvl[game]]}) szintet!</p>`;
+      lvl[game]++;
+      localStorage.setItem("levels", lvl.join());
+    }
+    return rt;
   }
 
   function mineAct() {
@@ -89,7 +122,7 @@ function _load() {
     let room = {
       kincs: Math.pow(level, 2) + level * 2, //3, 8, 15
       akna: level * 3, //3, 6, 9 => 6/16, 14/36, 24/64
-    }
+    };
     var field = [];
     for (let x = 0; x < s; x++) {
       field.push([]);
@@ -120,32 +153,13 @@ function _load() {
     let aknaHit = 0;
     let firstEnd = true;
 
-    function xtrascore(score, game) {
-      let rt = "";
-      if (score > rekord[game]) {
-          rekord[game] = score;
-          localStorage.setItem("records", rekord.join());
-          rt += `<p>Új rekord, gratula!!!</p>`;
-        }
-      nl = nextl[game][level-1]
-      if (score < nl) {
-        let nl = nextl[game][level-1]; 
-        rt += `<p>A következő (${nlname[lvl[game]]}) szintre ${nl} ponttal juthatsz el.</p>`;
-      } else {
-        rt += `<p>Ezzel elérted a következő (${nlname[lvl[game]]}) szintet!</p>`;
-        lvl[game]++;
-        localStorage.setItem("levels", lvl.join());
-      }
-      return rt;
-    }
-
     function updateMScore() {
       el("subHeader").innerHTML = `
           <span class="score">Zsuzsi: <span class="lime">${kincsHit}</span>/${room.kincs}</span> 
           <span class="score">Akna: <span class="lime">${aknaHit}</span>/${room.akna}</span>
           <span class="score">Pont: <span id="ms" class="red">${score}</span></span> 
         `;
-      
+
       if (kincsHit == room.kincs) {
         voice("happy1");
         let bonus = 10 + (s * s - steps - aknaHit * 3) * level;
@@ -156,14 +170,16 @@ function _load() {
 
         mes += xtrascore(score, 0);
         message(mes);
-      
-        document.querySelectorAll(".minefield").forEach((i) => i.removeEventListener("click", pressMine));
-      }      
+
+        document
+          .querySelectorAll(".minefield")
+          .forEach((i) => i.removeEventListener("click", pressMine));
+      }
     }
-    
+
     el("header").innerHTML = `
       <h2>ZSUZSIKERESŐ</h2>
-      <h3>Szint: ${nlname[level-1]}</h3>
+      <h3>Szint: ${nlname[level - 1]}</h3>
     `;
     el("main").innerHTML = `
         <div id="subHeader">
@@ -186,12 +202,14 @@ function _load() {
       gardenStr += "</tr>";
     }
     el("garden").innerHTML = gardenStr;
-    document.querySelectorAll(".minefield").forEach((i) => i.addEventListener("click", pressMine));
+    document
+      .querySelectorAll(".minefield")
+      .forEach((i) => i.addEventListener("click", pressMine));
     updateMScore();
-   
+
     function pressMine(e) {
       let ms = e.target.id.split("_")[1];
-      console.log('ms: ', ms);
+      console.log("ms: ", ms);
       let mineX = Number(ms.split("-")[0]);
       let mineY = Number(ms.split("-")[1]);
       if (field[mineX][mineY][0] === true) return;
@@ -261,30 +279,30 @@ function _load() {
     let level = lvl[1];
     let score = 0;
     let steps = 0;
-    let s = level +1;
+    let s = level + 1;
     let marr = [];
-    for (let i = 0; i < Math.pow(2, level); i++) {
+    let pairs = Math.pow(2, level);
+    let kincsHit = 0;
+    for (let i = 0; i < pairs; i++) {
       marr.push(i);
       marr.push(i);
     }
     if (level == 2) marr.push(-1);
-    for (let i = marr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [marr[i], marr[j]] = [marr[j], marr[i]];
-    }
+    let narr = kever(marr);
     var field = [];
     let num = 0;
+    let sels = [];
     for (let x = 0; x < s; x++) {
       field.push([]);
       for (let y = 0; y < s; y++) {
-        field[x].push([false, marr[num]+1]);
+        field[x].push([false, narr[num] + 1]);
         num++;
       }
     }
-    console.log('field: ', field);
+    console.log("field: ", field);
     el("header").innerHTML = `
       <h2>ZSUZSIMEM</h2>
-      <h3>Szint: ${nlname[level-1]}</h3>
+      <h3>Szint: ${nlname[level - 1]}</h3>
     `;
     el("main").innerHTML = `
         <div id="subHeader">
@@ -307,9 +325,79 @@ function _load() {
       gardenStr += "</tr>";
     }
     el("garden").innerHTML = gardenStr;
-    /*CONT: 
-    document.querySelectorAll(".minefield").forEach((i) => i.addEventListener("click", pressMem));
-    updateEScore(); */
+
+    function updateEScore() {
+      el("subHeader").innerHTML = `
+          <span class="score">Találat: <span class="lime">${kincsHit}</span>/${pairs}</span> 
+          <span class="score">Pont: <span id="ms" class="red">${score}</span></span> 
+        `;
+
+      if (kincsHit == pairs) {
+        voice("happy2");
+        let bonus = (pairs * 2 - steps) * level;
+        if (bonus < level * 2) bonus = level * 2;
+        score += bonus;
+        el("ms").innerHTML = score;
+        let mes = `<p>Gratulálok! Sikerült megtalálnod az összes ${pairs} Zsuzsi-párt ${steps} lépésből.</p><p>A pontszámod: ${score} (bónusz: ${bonus}).</p>`;
+
+        mes += xtrascore(score, 1);
+
+        message(mes);
+
+        document
+          .querySelectorAll(".minefield")
+          .forEach((i) => i.removeEventListener("click", pressMem));//TOFIX: 
+      }
+    }
+
+    function pressMem(e) {
+      let hit = false;
+      let ms = e.target.id.split("_")[1];
+      let mineX = Number(ms.split("-")[0]);
+      let mineY = Number(ms.split("-")[1]);
+      if (field[mineX][mineY][0] === true) return;
+      if (sels.length > 0) {
+        if (sels[0].x === mineX && sels[0].y === mineY) return;
+        if (field[mineX][mineY][1] === sels[0].val) {
+          voice('pearl');
+          kincsHit++;
+          hit = true;
+        }
+      }
+      sels.push({
+        x: mineX,
+        y: mineY,
+        val: field[mineX][mineY][1],
+      });
+      el("mf_" + mineX + "-" + mineY).src = "./img/zs" + field[mineX][mineY][1] + ".jpg";
+      console.log("sels: ", sels);
+      if (sels.length == 2) {
+        if (hit) {
+          score += level;
+        }
+        steps++;
+        updateEScore();
+        document
+          .querySelectorAll(".minefield")
+          .forEach((i) => i.removeEventListener("click", pressMem));
+        timo = setTimeout(() => {
+          let is = hit ? "pipa" : "gyep";
+          for (s of sels) {
+            el("mf_" + s.x + "-" + s.y).src = "./img/" + is + ".jpg";
+            if (hit) field[s.x][s.y][0] = true;
+          };
+          document
+            .querySelectorAll(".minefield")
+            .forEach((i) => i.addEventListener("click", pressMem));
+          sels = [];
+        }, 2000)
+      }
+    }
+
+    document
+      .querySelectorAll(".minefield")
+      .forEach((i) => i.addEventListener("click", pressMem));
+    updateEScore();
   }
   //START
   restart();
