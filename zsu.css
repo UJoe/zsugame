@@ -192,66 +192,121 @@ h3 {
 }
 
 .nosee {
-	display: none;
-	height: 0;
-	width: 0;
-	z-index: 0;
-	opacity: 0;
+  display: none;
+  height: 0;
+  width: 0;
+  z-index: 0;
+  opacity: 0;
 }
 
 .see {
-	display: flex;
-	height: 100vh;
-	width: 100vw;
-	z-index: 999;
-	opacity: 0.9;
-	background-color: whitesmoke;
-	justify-content: center;
-	align-items: center;
-	position: fixed;
-	top: 0;
-	left: 0;
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  z-index: 999;
+  opacity: 0.9;
+  background-color: whitesmoke;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
 }
 
 #mescard {
-	width: fit-content;
-	max-width: 70vw;
-	height: fit-content;
-	max-height: 70vh;
-	font-size: max(1.3vw, 1.1em);
-	opacity: 1 !important;
-	background-color: darkslategray;
-	z-index: 9998;
-	border: cyan outset 5px;
-	border-radius: 10px;
-	overflow: auto;
+  width: fit-content;
+  max-width: 70vw;
+  height: fit-content;
+  max-height: 70vh;
+  font-size: max(1.3vw, 1.1em);
+  opacity: 1 !important;
+  background-color: darkslategray;
+  z-index: 9998;
+  border: cyan outset 5px;
+  border-radius: 10px;
+  overflow: auto;
   padding: 15px;
 }
 
 #mescard p {
-	color: lightyellow;
-	text-align: justify;
+  color: lightyellow;
+  text-align: justify;
 }
 
 #mesBtns {
-	display: flex;
-	justify-content: space-evenly;
-	margin: 1vh 0;
+  display: flex;
+  justify-content: space-evenly;
+  margin: 1vh 0;
 }
 
 .mesBtn {
-	flex-grow: 1;
-	margin: 0 5vw;
-	height: fit-content;
-	min-height: 35px;
-	padding: 5px;
-	color: orangered;
-	background-color: darkblue;
-	border: outset 2px turquoise;
-	border-radius: 10px;
-	opacity: 1;
-	outline: none;
-	font-size: min(2vw, 1em);
-	width: fit-content;
-	max-width: 20vw;
+  flex-grow: 1;
+  margin: 0 5vw;
+  height: fit-content;
+  min-height: 35px;
+  padding: 5px;
+  color: orangered;
+  background-color: darkblue;
+  border: outset 2px turquoise;
+  border-radius: 10px;
+  opacity: 1;
+  outline: none;
+  font-size: min(2vw, 1em);
+  width: fit-content;
+  max-width: 20vw;
+}
+
+#qq {
+  width: 90%;
+  margin: auto;
+  background-image: url(./img/tealback.jpg);
+  background-size: cover;
+  color: snow;
+  text-shadow:
+    -1px -1px 0 black,
+    1px -1px 0 black,
+    -1px 1px 0 black,
+    1px 1px 0 black;
+  line-height: 1.5;
+  box-sizing: border-box;
+  padding: 10px;
+  font-size: min(3.8vw, 1.4em);
+  border: 4px solid lightseagreen;
+  border-radius: 10px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+#aBtns {
+  display: flex;
+  justify-content: space-evenly;
+  margin: .5vh 0;
+  flex-wrap: wrap;
+}
+
+.aBtn {
+  flex-grow: 1;
+  margin: 1vh 5vw;
+  height: fit-content;
+  width: 35%;
+  min-height: 35px;
+  padding: 5px;
+  color: orangered;
+  background-color: darkblue;
+  border: outset 2px turquoise;
+  border-radius: 10px;
+  opacity: 1;
+  outline: none;
+  font-size: min(3.8vw, 1.4em);
+}
+
+.aBtn:active {
+  background-color: rgb(22, 22, 80);
+  border: inset 2px turquoise;
+}
+
+.aBtn:disabled {
+  color: darkslateblue;
+  background-color: darkslategray;
+  opacity: .5;
 }

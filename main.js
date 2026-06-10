@@ -18,14 +18,14 @@ function _load() {
 
   let lvl = [1, 1, 1];
   let nextl = [
-    [20, 40, 60],
-    [20, 40, 60],
+    [20, 40, 55],
+    [6, 18, 50],
     [20, 40, 60],
   ];
   const nlname = ["kezdő", "haladó", "mester"];
   let score = 0;
   let rekord = [0, 0, 0];
-  /* if (localStorage.getItem("records")) {
+  if (localStorage.getItem("records")) {
     let records = localStorage.getItem("records").split(",");
     for (let i = 0; i < records.length; i++) {
       rekord[i] = parseInt(records[i]);
@@ -36,13 +36,13 @@ function _load() {
     for (let i = 0; i < szintek.length; i++) {
       lvl[i] = parseInt(szintek[i]);
     }
-  } */
+  }
   let music = el("music");
   let sound = el("sound");
   let timo;
   music.volume = 0.3;
   sound.volume = 0.5;
-  let musicOn = true;
+  let musicOn = false;
   let soundOn = true;
 
   function voice(src) {
@@ -75,20 +75,18 @@ function _load() {
     el("happen").innerHTML = "";
     el("header").innerHTML = "";
     el("main").innerHTML = "";
-    el("opening").innerHTML = `<h1>ZSUGAME</h1>>
+    el("opening").innerHTML = `<h1>ZSUGAME</h1>
     <h2>Mivel akarsz játszani?</h2>
     <div id="tBtns">
       <button class="tBtn" id="mineStart">Zsuzsikereső<br>(${nlname[lvl[0] - 1]})</button>
       <button class="tBtn" id="memStart">Zsuzsimemo<br>(${nlname[lvl[1] - 1]})</button>
-      <button class="tBtn" id="matchStart">Zsuzsimatch<br>(${nlname[lvl[2] - 1]})</button>
+      <button class="tBtn" id="quizStart">Zsuzsikvíz<br>(${nlname[lvl[2] - 1]})</button>
     </div>`;
     music.src = "./audio/love.mp3";
-    music.play();
+    if (musicOn) music.play();
     el("mineStart").addEventListener("click", mineAct);
     el("memStart").addEventListener("click", memAct);
-    el("matchStart").addEventListener("click", () => {
-      message("Hamarosan...");
-    });
+    el("quizStart").addEventListener("click", quizAct);
   }
 
   function xtrascore(score, game) {
@@ -114,7 +112,7 @@ function _load() {
     document.body.requestFullscreen();
     el("opening").innerHTML = "";
     music.src = "./audio/music1.mp3";
-    music.play();
+    if (musicOn) music.play();
     let level = lvl[0];
     let steps = 0;
     let zs = 1 + Math.floor(Math.random() * 8);
@@ -275,7 +273,7 @@ function _load() {
     document.body.requestFullscreen();
     el("opening").innerHTML = "";
     music.src = "./audio/music2.mp3";
-    music.play();
+    if (musicOn) music.play();
     let level = lvl[1];
     let score = 0;
     let steps = 0;
@@ -334,7 +332,7 @@ function _load() {
 
       if (kincsHit == pairs) {
         voice("happy2");
-        let bonus = (pairs * 2 - steps) * level;
+        let bonus = (pairs * 3 - steps) * level;
         if (bonus < level * 2) bonus = level * 2;
         score += bonus;
         el("ms").innerHTML = score;
@@ -346,7 +344,7 @@ function _load() {
 
         document
           .querySelectorAll(".minefield")
-          .forEach((i) => i.removeEventListener("click", pressMem));//TOFIX: 
+          .forEach((i) => i.removeEventListener("click", pressMem));
       }
     }
 
@@ -399,6 +397,110 @@ function _load() {
       .forEach((i) => i.addEventListener("click", pressMem));
     updateEScore();
   }
+
+  function quizAct() {
+    document.body.requestFullscreen();
+    el("opening").innerHTML = "";
+    music.src = "./audio/music3.mp3";
+    if (musicOn) music.play();
+    let level = lvl[2];
+    let score = 0;
+    let goal = 4 + level;
+
+    function genQ() {
+      let qs = [];
+      let q = false;
+      for (let l = level; l > 0; l--) {
+        for (q of quiz) {
+          if (q.lvl == l && q.win === false) {
+            qs.push(q);
+          }
+        }
+        console.log("QS: ", qs);
+        if (qs.length > 0) {
+          q = rnd(qs);
+          return q;
+        } else {
+          q = false;
+        }
+      }
+      return q;
+    }
+
+    let question = genQ();
+    if (question === false) question = rnd(quiz);
+    let [qq, aa] = [question.q, question.a];
+    el("header").innerHTML = `
+      <h2>ZSUZSIKVÍZ</h2>
+      <h3>Szint: ${nlname[level - 1]}</h3>
+    `;
+
+    function pressQuiz(e) {
+      let answer = e.target.id;
+      console.log('answer: ', answer);
+      if (answer == aa[0]) {
+        voice("right");
+        score++;
+        let qqq = getObj(quiz, "q", qq);
+        qqq.win = true;
+        if (score < goal) {
+          question = genQ();
+          if (question === false) question = rnd(quiz);
+          qq = question.q;
+          aa = question.a;
+          displayQA();
+        } else {
+          voice("happy3");
+          let mes = `
+            <p>Gratulálok! Sikerült minden kérdést helyesen megválaszolnod!</p>
+            <p>Ezzel továbbjutottál következő (${nlname[lvl[2]]}) szintre!</p>`;
+          lvl[2]++;
+          localStorage.setItem("levels", lvl.join());
+
+          message(mes);
+
+          document
+            .querySelectorAll(".aBtn")
+            .forEach((i) => i.removeEventListener("click", pressQuiz));
+        }
+      } else {
+        let wr = Math.floor(Math.random() * 6);
+        voice("wrong" + wr);
+        document
+          .querySelectorAll(".aBtn")
+          .forEach((i) => i.removeEventListener("click", pressQuiz));
+        message("Bzzz, falsch!");
+      }
+    }
+
+    function displayQA() {
+      let as = [];
+      do {
+        const can = rnd(aa);
+        if (!checkItem(as, can)) as.push(can);
+      } while (as.length < 4);
+      let bStr = "";
+      for (ass of as) {
+        bStr += `
+        <button class="aBtn", id="${ass}">${ass}</button>
+      `;
+      }
+
+      el("main").innerHTML = `
+      <div id="qq">(${score}/${goal}): ${qq}</div>
+      <div id="aBtns">${bStr}</div>
+    `;
+
+      document
+        .querySelectorAll(".aBtn")
+        .forEach((i) => i.addEventListener("click", pressQuiz));
+    }
+
+    displayQA();
+
+  }
+
+
   //START
   restart();
 }
