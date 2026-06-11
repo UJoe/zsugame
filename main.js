@@ -20,9 +20,10 @@ function _load() {
   let nextl = [
     [20, 40, 55],
     [6, 18, 50],
-    [20, 40, 60],
   ];
-  const nlname = ["kezdő", "haladó", "mester"];
+  const nlname = ["kezdő", "haladó", "mester", "Kimaxolva!"];
+  const gname = ["Zsuzsikereső", "Zsuzsimemo", "Zsuzsikvíz"]
+  const startid = ["mineStart", "memStart", "quizStart"]
   let score = 0;
   let rekord = [0, 0, 0];
   if (localStorage.getItem("records")) {
@@ -72,21 +73,43 @@ function _load() {
 
   function restart() {
     score = 0;
+    let konec = false;
     el("happen").innerHTML = "";
     el("header").innerHTML = "";
     el("main").innerHTML = "";
-    el("opening").innerHTML = `<h1>ZSUGAME</h1>
-    <h2>Mivel akarsz játszani?</h2>
-    <div id="tBtns">
-      <button class="tBtn" id="mineStart">Zsuzsikereső<br>(${nlname[lvl[0] - 1]})</button>
-      <button class="tBtn" id="memStart">Zsuzsimemo<br>(${nlname[lvl[1] - 1]})</button>
-      <button class="tBtn" id="quizStart">Zsuzsikvíz<br>(${nlname[lvl[2] - 1]})</button>
-    </div>`;
+    let btStr = `<h1>ZSUGAME</h1>
+      <h2>Mivel akarsz játszani?</h2>
+      <div id="tBtns">`
+    for (let g = 0; g < gname.length; g++) {
+      if (lvl[g] > 3) {
+        btStr += `
+          <button class="tBtn" id=${startid[g]} disabled>${gname[g]}<br>(${nlname[lvl[g] - 1]})</button>
+        `
+      } else {
+        btStr += `
+          <button class="tBtn" id=${startid[g]}>${gname[g]}<br>(${nlname[lvl[g] - 1]})</button>
+        `
+      }
+    }
+    if (checkEnd().charAt(0) == "E") {
+      btStr += `
+          <button class="tBtn" id="finale">Kérem a Jutalmat!</button>
+        `;
+      konec = true;
+    }
+    btStr += "</div>";
+    el("opening").innerHTML = btStr;
     music.src = "./audio/love.mp3";
     if (musicOn) music.play();
     el("mineStart").addEventListener("click", mineAct);
     el("memStart").addEventListener("click", memAct);
     el("quizStart").addEventListener("click", quizAct);
+    if (konec) el("finale").addEventListener("click", finalAct);
+  }
+
+  function finalAct() {
+    message("Hamarosan...");
+    //TODO: finale
   }
 
   function xtrascore(score, game) {
@@ -101,11 +124,25 @@ function _load() {
       let nl = nextl[game][lvl[game] - 1];
       rt += `<p>A következő (${nlname[lvl[game]]}) szintre ${nl} ponttal juthatsz el.</p>`;
     } else {
-      rt += `<p>Ezzel elérted a következő (${nlname[lvl[game]]}) szintet!</p>`;
       lvl[game]++;
+      if (lvl[game] == 4) {
+        rt += "<p>Ezzel kimaxoltad a " + gname[game] + "t! " + checkEnd() + "</p>";
+      } else {
+        rt += `<p>Ezzel elérted a következő (${nlname[lvl[game] - 1]}) szintet!</p>`;
+      }
+
       localStorage.setItem("levels", lvl.join());
     }
     return rt;
+  }
+
+  function checkEnd() {
+    let ende = true;
+    for (l of lvl) {
+      if (l < 4) ende = false;
+    }
+    let eStr = ende ? "Ezzel pedig teljesítettél minden pályát mester szinten, így jogosult lettél az Évfordulós Jutalomra!" : "Maxolj ki minden maradék játékot az Évfordulós Jutalomért!";
+    return eStr;
   }
 
   function mineAct() {
@@ -146,7 +183,6 @@ function _load() {
         numera++;
       }
     } while (numera < room.akna);
-    //let pic = ["gyep.jpg", "pearl.png", "akna.png"]; pic[field[col][row][1]]
     let kincsHit = 0;
     let aknaHit = 0;
     let firstEnd = true;
@@ -167,6 +203,7 @@ function _load() {
         let mes = `<p>Gratulálok! Sikerült megtalálnod a ${room.kincs} Zsuzsit ${steps} lépésből, és elkerülni ${room.akna - aknaHit} aknát!</p><p>A pontszámod: ${score} (bónusz: ${bonus}).</p>`;
 
         mes += xtrascore(score, 0);
+
         message(mes);
 
         document
@@ -277,6 +314,7 @@ function _load() {
     let level = lvl[1];
     let score = 0;
     let steps = 0;
+    let err = 0;
     let s = level + 1;
     let marr = [];
     let pairs = Math.pow(2, level);
@@ -299,7 +337,7 @@ function _load() {
     }
     console.log("field: ", field);
     el("header").innerHTML = `
-      <h2>ZSUZSIMEM</h2>
+      <h2>ZSUZSIMEMO</h2>
       <h3>Szint: ${nlname[level - 1]}</h3>
     `;
     el("main").innerHTML = `
@@ -353,10 +391,11 @@ function _load() {
       let ms = e.target.id.split("_")[1];
       let mineX = Number(ms.split("-")[0]);
       let mineY = Number(ms.split("-")[1]);
-      if (field[mineX][mineY][0] === true) return;
+      let fm = field[mineX][mineY];
+      if (fm[0] === true) return;
       if (sels.length > 0) {
         if (sels[0].x === mineX && sels[0].y === mineY) return;
-        if (field[mineX][mineY][1] === sels[0].val) {
+        if (fm[1] === sels[0].val) {
           voice('pearl');
           kincsHit++;
           hit = true;
@@ -365,10 +404,16 @@ function _load() {
       sels.push({
         x: mineX,
         y: mineY,
-        val: field[mineX][mineY][1],
+        val: fm[1],
       });
-      el("mf_" + mineX + "-" + mineY).src = "./img/zs" + field[mineX][mineY][1] + ".jpg";
-      console.log("sels: ", sels);
+      let saci = fm[1] > 0 ? "zs" + fm[1] + ".jpg" : "akna.png";
+      el("mf_" + mineX + "-" + mineY).src = "./img/" + saci;
+      if (fm[1] == 0) {
+        err++;
+        score -= err;
+        voice("bomb");
+        updateEScore();
+      }
       if (sels.length == 2) {
         if (hit) {
           score += level;
@@ -388,7 +433,7 @@ function _load() {
             .querySelectorAll(".minefield")
             .forEach((i) => i.addEventListener("click", pressMem));
           sels = [];
-        }, 2000)
+        }, 1800)
       }
     }
 
@@ -416,7 +461,6 @@ function _load() {
             qs.push(q);
           }
         }
-        console.log("QS: ", qs);
         if (qs.length > 0) {
           q = rnd(qs);
           return q;
@@ -451,10 +495,14 @@ function _load() {
           displayQA();
         } else {
           voice("happy3");
-          let mes = `
-            <p>Gratulálok! Sikerült minden kérdést helyesen megválaszolnod!</p>
-            <p>Ezzel továbbjutottál következő (${nlname[lvl[2]]}) szintre!</p>`;
+          let mes = `<p>Gratulálok! Sikerült minden kérdést helyesen megválaszolnod!</p>`
           lvl[2]++;
+          if (lvl[2] == 4) {
+            mes += "<p>Ezzel kimaxoltad Zsuzsikvízt! " + checkEnd() + "</p>";
+          } else {
+            mes += `<p>Ezzel továbbjutottál következő (${nlname[lvl[2] - 1]}) szintre!</p>`;
+          }
+
           localStorage.setItem("levels", lvl.join());
 
           message(mes);

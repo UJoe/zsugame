@@ -72,9 +72,9 @@ h3 {
 }
 
 .tBtn:disabled {
-  color: darkslateblue;
+  color: lime;
   background-color: darkslategray;
-  opacity: .5;
+  opacity: .9;
 }
 
 #subHeader {
