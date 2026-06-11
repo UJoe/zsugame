@@ -145,6 +145,9 @@ function _load() {
     return eStr;
   }
 
+  //TODO: navbar minden Act-ba
+  //TODO: háttérszínek
+
   function mineAct() {
     document.body.requestFullscreen();
     el("opening").innerHTML = "";
@@ -514,10 +517,12 @@ function _load() {
       } else {
         let wr = Math.floor(Math.random() * 6);
         voice("wrong" + wr);
+        let wts = ["Mégis hogy gondoltad ezt?!", "Ezt vesd jobban górcső alá!", "Hát... ennél azért jobbra számítottam!", "Ezen gondolkozz még egy kicsit...", "Hát ez kész! Komolyan...", "Bzzz, falsch!"];
+        let wt = wts[wr];
         document
           .querySelectorAll(".aBtn")
           .forEach((i) => i.removeEventListener("click", pressQuiz));
-        message("Bzzz, falsch!");
+        message(wt);
       }
     }
 
