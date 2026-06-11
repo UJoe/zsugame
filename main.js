@@ -147,6 +147,7 @@ function _load() {
 
   //TODO: navbar minden Act-ba
   //TODO: háttérszínek
+  //TODO: finálé után resetelni lehet a leveleket
 
   function mineAct() {
     document.body.requestFullscreen();

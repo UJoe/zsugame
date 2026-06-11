@@ -151,8 +151,128 @@ window.quiz = [
     },
     {
         lvl: 2,
-        q: "Hány beépített dallam van abban a szintetizátorban, amit Gergő vett Zsuzsinak??",
+        q: "Hány beépített dallam van abban a szintetizátorban, amit Gergő vett Zsuzsinak?",
         a: ["50", "100", "60", "25"],
         win: false
-    }
+    },
+    {
+        lvl: 2,
+        q: "Mi volt az első CD, amit zsuzsi vett Gergőnek?",
+        a: ["Mystic des Ostens", "NOX: Karácsony", "valami Ghymes", "Kaláka: Válogatás"],
+        win: false
+    },
+    {
+        lvl: 3,
+        q: "Mi a címe Gergő kedvenc Rejtő novellájának?",
+        a: ["Az ellopott futár", "A tizennégy karátos autó", "Piszkos Fred, a kapitány", "Az előretolt helyőrség"],
+        win: false
+    },
+    {
+        lvl: 1,
+        q: "Mi a címe Gergő kedvenc Rejtő novellájának?",
+        a: ["Az ellopott futár", "A tizennégy karátos autó", "Piszkos Fred, a kapitány", "Az előretolt helyőrség"],
+        win: false
+    },
+    {
+        lvl: 2,
+        q: "Mennyi volt a BUG Bt. kezdőtőkéje?",
+        a: ["30 ezer", "150 ezer", "0", "50 ezer"],
+        win: false
+    },
+    {
+        lvl: 3,
+        q: "Hogy hívják Gergő facebook csoportját?",
+        a: ["Ortodox Kerekasztal", "Az AI Sötét Oldala", "Mindennapi Hitvédelem", "Bergersen Fan Club"],
+        win: false
+    },
+    {
+        lvl: 3,
+        q: "Mi a neve Gergő kedvenc japán együttesének?",
+        a: ["Kalafina", "Fukurishi Gion", "Hata Mari", "Hattorini"],
+        win: false
+    },
+    {
+        lvl: 1,
+        q: "Milyen játékot fejlesztett tovább Zsuzsi és Gergő a nászútjukon?",
+        a: ["Ki nevet a végén?", "Connect 4", "Makao", "Intim kalandok"],
+        win: false
+    },
+    {
+        lvl: 1,
+        q: "Milyen csokit evett legtöbbször Zsuzsi, amikor Gergő udvarolt neki?",
+        a: ["Eperjó", "Milka", "Konyakmeggy", "After 8"],
+        win: false
+    },
+    {
+        lvl: 2,
+        q: "Melyik könyvet kellett volna odaadni Margó néninek, hogy előreengedjen a sorban az ebédlőnél?",
+        a: ["Sicc", "Egészségetekre, mert nincs hely!", "Az előretolt helyőrség", "Ablak Zsiráf"],
+        win: false
+    },
+    {
+        lvl: 2,
+        q: "Milyen anyagból volt az Avasi Gimnáziumban a köpeny?",
+        a: ["napvászon", "textil", "pamut", "műszál"],
+        win: false
+    },
+    {
+        lvl: 2,
+        q: "Milyen név szerint ismert szerepet játszott Gergő a Mária Evangéliumában?",
+        a: ["Gáspár", "Menyhért", "Boldizsár", "Pilátus"],
+        win: false
+    },
+    {
+        lvl: 1,
+        q: "Mit mondtak egymásnak Zsuzsi, Gergő és Szabó Levi a matekjavítók előtt?",
+        a: ["Ko-operáció", "Szeretjük Révfyt", "Kell az ötös", "MOst meglesz!"],
+        win: false
+    },
+    {
+        lvl: 3,
+        q: "Mi a neve a Gergő által fejlesztett bejegyzett Agilis tréningnek?",
+        a: ["Agile fun: the mentals", "Work Simulation Made Fun", "Impediment Killer", "Boost Your Team Dynamics"],
+        win: false
+    },
+    {
+        lvl: 1,
+        q: "Hova vonult el Zsuzsi és Gergő gyakran az Avasi Gimnáziumban?",
+        a: ["nyaki tag", "ebédlő", "22-es terem", "alagsor"],
+        win: false
+    },
+    {
+        lvl: 3,
+        q: "Miről szólt az a film, amire a legkevésbé figyelt Zsuzsi és Gergő egy moziban?",
+        a: ["Egy kiégett lelkészről", "Honnan tudjam?", "Egy családját védő rendőrről", "Egy szerelmi történetről"],
+        win: false
+    },
+    {
+        lvl: 2,
+        q: "Ki volt Gergő vezető tanára, amikor a tanítási gyakorlatát végezte?",
+        a: ["Magnucz Zsolt", "Vincze Rita", "Nyíri Zoltán", "Godóné"],
+        win: false
+    },
+    {
+        lvl: 1,
+        q: "Hol dolgozott együtt Zsuzsi és Gergő?",
+        a: ["Miskolci Ortodox Múzeum", "Miskolci Egyetem", "Miniszterelnöki Hivatal", "Nem volt ilyen"],
+        win: false
+    },
+    {
+        lvl: 2,
+        q: "Hova NEM járt együtt rendszeresen Zsuzsi és Gergő közös egyetemi éveik alatt?",
+        a: ["könyvtár", "hittan", "tánc club", "McDonald's"],
+        win: false
+    },
+    {
+        lvl: 3,
+        q: "Melyik szerzőtől van a legtöbb könyve Gergőnek a dolgozó polcán?",
+        a: ["saját magától", "az apjától", "Dosztojevszkijtől", "John Meyendorfftól"],
+        win: false
+    },
+    {
+        lvl: 2,
+        q: "Mi a címe annak a zeneműnek, amit Gergő szerzett Zsuzsinak?",
+        a: ["Zsuzsa Szimfónia", "Zsuzsi Symphony", "Rózsaszál Kantáta", "Néked dalol hű szívem"],
+        win: false
+    },
 ]
