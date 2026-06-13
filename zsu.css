@@ -77,6 +77,17 @@ h3 {
   opacity: .9;
 }
 
+.alter {
+  color: lightgray !important;
+  background-color: darkslategray !important;
+  opacity: .8 !important;
+}
+
+.alter2 {
+  color: darkblue !important;
+  background-color: yellow !important;
+}
+
 #subHeader {
   padding: 10px;
   height: fit-content;
@@ -218,7 +229,7 @@ h3 {
   max-width: 70vw;
   height: fit-content;
   max-height: 70vh;
-  font-size: max(1.3vw, 1.1em);
+  font-size: max(1.2vw, 1em);
   opacity: 1 !important;
   background-color: darkslategray;
   z-index: 9998;
@@ -309,4 +320,29 @@ h3 {
   color: darkslateblue;
   background-color: darkslategray;
   opacity: .5;
+}
+
+.prize {
+  margin: 1vh auto;
+  height: fit-content;
+  width: 50vw;
+  padding: 5px;
+  color: red;
+  background-color: lightgreen;
+  border: outset 2px turquoise;
+  border-radius: 10px;
+  outline: none;
+  font-size: min(3.2vw, 1.2em);
+  animation: appear 1.5s ease-out forwards;
+  text-align: center;
+}
+
+@keyframes appear {
+  0% {
+    filter: brightness(0) opacity(0) blur(15px);
+  }
+
+  100% {
+    filter: brightness(1) opacity(1) blur(0);
+  }
 }

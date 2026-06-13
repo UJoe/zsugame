@@ -91,12 +91,45 @@ function _load() {
         `
       }
     }
+    let calculus = "";
+    let canPrize = false;
+    let hourleft = 0;
+    let minleft = 0;
     if (checkEnd().charAt(0) == "E") {
-      btStr += `
+      if (localStorage.getItem("prize")) {
+        let nowTime = new Date().getTime();
+        let oldTime = parseInt(localStorage.getItem("prize"));
+        let renewTime = oldTime + 3 * 60 * 60 * 1000;
+        let difi = renewTime - nowTime;
+        console.log('difi: ', difi);
+        if (difi < 60000) {
+          canPrize = true;
+        }
+        hourleft = Math.floor(difi / 1000 / 60 / 60);
+        console.log('hourleft: ', hourleft);
+        minleft = Math.floor((difi - hourleft * 1000 * 60 * 60) / 1000 / 60);
+        console.log('minleft: ', minleft);
+      } else {
+        canPrize = true;
+      }
+      if (canPrize) {
+        btStr += `
           <button class="tBtn" id="finale">Kérem a Jutalmat!</button>
         `;
+      } else {
+        let horuS = "";
+        if (hourleft > 0) horuS += hourleft + " óra : ";
+        horuS += minleft + " perc";
+        btStr += `
+          <button class="tBtn alter" id="countdown">Új jutalom ${horuS} múlva</button>
+        `;
+      }
+      btStr += `
+        <button class="tBtn alter2" id="reset">Újrajátszás</button>
+      `
       konec = true;
     }
+
     btStr += "</div>";
     el("opening").innerHTML = btStr;
     music.src = "./audio/love.mp3";
@@ -104,12 +137,20 @@ function _load() {
     el("mineStart").addEventListener("click", mineAct);
     el("memStart").addEventListener("click", memAct);
     el("quizStart").addEventListener("click", quizAct);
-    if (konec) el("finale").addEventListener("click", finalAct);
+    if (konec) {
+      if (el("finale")) el("finale").addEventListener("click", finalAct);
+      el("reset").addEventListener("click", resetAct);
+    }
   }
 
-  function finalAct() {
-    message("Hamarosan...");
-    //TODO: finale
+  function resetAct() {
+    console.log("ÚJRA");
+    localStorage.setItem("levels", "1,1,1");
+    szintek = localStorage.getItem("levels").split(",");
+    for (let i = 0; i < szintek.length; i++) {
+      lvl[i] = parseInt(szintek[i]);
+    }
+    restart();
   }
 
   function xtrascore(score, game) {
@@ -551,9 +592,39 @@ function _load() {
     }
 
     displayQA();
-
   }
 
+  function finalAct() {
+    let prizes = [
+      "Egy nagy ölelés",
+      "Három puszi",
+      "Egy perces simogatás",
+      "Közös koccintás",
+      "Kézenfogva séta",
+      "Egy-egy apró ajándék egymásnak",
+      "Egy hosszú csók",
+      "Egy választott közös játék",
+      "A következő egyéni dolog együtt",
+      "Lelki beszélgetés",
+      "Közös zenélés/éneklés/tánc",
+      "Szabad Zsuzsi kívánság",
+      "Szabad Gergő kívánság",
+      "Segítség valamiben, akinek jobban kell",
+      "Gergő megborotvál valakit",
+      "Nyugodt, veszekedésmentes 3 óra",
+      "Mondjatok 1-1 viccet!",
+      "Üljön Zsuzsi Gergő ölébe!"
+    ];
+    let prize = rnd(prizes);
+    let pStr = `
+      <p>A jutalmad:</p>
+      <div class="prize">${prize}</div>
+      <p><i>BOLDOG 25. HÁZASSÁGI ÉVFORDULÓT!</i></p>
+    `;
+    let prizeTime = new Date().getTime();
+    localStorage.setItem("prize", prizeTime);
+    message(pStr);
+  }
 
   //START
   restart();
