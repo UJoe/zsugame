@@ -15,6 +15,11 @@ body {
   user-select: none;
 }
 
+:fullscreen,
+::backdrop {
+  background-color: lightpink;
+}
+
 #main {
   margin-top: 3vh;
 }
@@ -345,4 +350,63 @@ h3 {
   100% {
     filter: brightness(1) opacity(1) blur(0);
   }
+}
+
+#happy {
+  text-align: center !important;
+  font-style: italic;
+  animation: rainbow 1.2s linear infinite alternate;
+  width: fit-content;
+  margin: 20px auto 10px;
+  padding: 10px;
+  border-radius: 20px;
+}
+
+@keyframes rainbow {
+  0% {
+    background-image: linear-gradient(to right, red, orange, yellow, blue, violet);
+  }
+
+  20% {
+    background-image: linear-gradient(to right, orange, yellow, blue, violet, red);
+  }
+
+  40% {
+    background-image: linear-gradient(to right, yellow, blue, violet, red, orange);
+  }
+
+  60% {
+    background-image: linear-gradient(to right, blue, violet, red, orange, yellow);
+  }
+
+  80% {
+    background-image: linear-gradient(to right, violet, red, orange, yellow, blue);
+  }
+
+  100% {
+    background-image: linear-gradient(to right, red, orange, yellow, blue, violet, );
+  }
+}
+
+#topMenu {
+  display: flex;
+  width: 100vw;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+  height: 5vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2;
+}
+
+.topBtns {
+  padding: 2px 1vw 2px 2px;
+  margin: 1px;
+  height: calc(5vw-6px);
+  width: calc(5vw-6px);
+  border: 2px outset lightcyan;
+  border-radius: 5px;
+  outline: none;
+  background-color: antiquewhite;
 }

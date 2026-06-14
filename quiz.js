@@ -91,7 +91,7 @@ window.quiz = [
     },
     {
         lvl: 2,
-        q: "Mi volt gergő kedvenc tévés vetélkedője?",
+        q: "Mi volt Gergő kedvenc tévés vetélkedője?",
         a: ["Dalnokok Ligája", "Pókerarc", "X Faktor", "Ötödölő"],
         win: false
     },

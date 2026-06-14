@@ -18,10 +18,10 @@ function _load() {
 
   let lvl = [1, 1, 1];
   let nextl = [
-    [20, 40, 55],
+    [20, 40, 56],
     [6, 18, 50],
   ];
-  const nlname = ["kezdő", "haladó", "mester", "Kimaxolva!"];
+  const nlname = ["kezdő", "haladó", "mester", "Kimaxolva!", "Kimaxolva!", "Kimaxolva!"];
   const gname = ["Zsuzsikereső", "Zsuzsimemo", "Zsuzsikvíz"]
   const startid = ["mineStart", "memStart", "quizStart"]
   let score = 0;
@@ -41,9 +41,10 @@ function _load() {
   let music = el("music");
   let sound = el("sound");
   let timo;
+  let timo2;
   music.volume = 0.3;
   sound.volume = 0.5;
-  let musicOn = false;
+  let musicOn = true;
   let soundOn = true;
 
   function voice(src) {
@@ -52,6 +53,59 @@ function _load() {
       sound.play();
     }
   }
+
+  //let musIcon = musicOn ? "./img/musicOn.png" : soundOn ? "./img/soundOn.png" : "./img/soundOff.png";
+
+  function changeMusic() {
+    let sBtn = document.getElementById("soundBtn");
+    if (musicOn) {
+      music.pause();
+      sBtn.src = "./img/soundOn.png";
+      musicOn = false;
+      soundOn = true;
+    } else {
+      if (soundOn) {
+        sBtn.src = "./img/soundOff.png";
+        musicOn = false;
+        soundOn = false;
+        sound.volume = 0;
+      } else {
+        music.play();
+        sBtn.src = "./img/musicOn.png";
+        musicOn = true;
+        soundOn = true;
+        music.volume = .3;
+        sound.volume = .5;
+      }
+    }
+  }
+
+  el("soundBtn").addEventListener('click', changeMusic);
+  el("homeBtn").addEventListener('click', () => {
+    clearTimeout(timo);
+    clearInterval(timo2);
+    restart();
+  });
+
+  function genCalc() {
+    let rs = "";
+    let nowTime = new Date().getTime();
+    renewTime = parseInt(localStorage.getItem("newprize"));
+    let difi = renewTime - nowTime;
+    if (difi < 60000) {
+      return `<button class="tBtn" id="finale">Kérem a Jutalmat!</button>`;
+    }
+    let hourleft = Math.floor(difi / 1000 / 60 / 60);
+    let minleft = Math.floor((difi - hourleft * 1000 * 60 * 60) / 1000 / 60);
+    let horuS = "";
+    if (hourleft > 0) horuS += hourleft + " óra : ";
+    horuS += minleft + " perc";
+    rs = `
+          <button class="tBtn alter" id="countdown">Új jutalom ${horuS} múlva</button>
+        `;
+    return rs;
+  }
+
 
   function message(txt) {
     happen.classList.remove("nosee");
@@ -92,38 +146,27 @@ function _load() {
       }
     }
     let calculus = "";
-    let canPrize = false;
-    let hourleft = 0;
-    let minleft = 0;
     if (checkEnd().charAt(0) == "E") {
-      if (localStorage.getItem("prize")) {
-        let nowTime = new Date().getTime();
-        let oldTime = parseInt(localStorage.getItem("prize"));
-        let renewTime = oldTime + 3 * 60 * 60 * 1000;
-        let difi = renewTime - nowTime;
-        console.log('difi: ', difi);
-        if (difi < 60000) {
-          canPrize = true;
+      if (localStorage.getItem("newprize")) {
+        btStr += `
+          <div id="cc">${genCalc()}</div>
+        ` ;
+        if (parseInt(localStorage.getItem("newprize")) - new Date().getTime() >= 60000) {
+          timo = setInterval(() => {
+            if (el("cc")) {
+              el("cc").innerHTML = genCalc();
+              if (el("finale")) el("finale").addEventListener("click", finalAct);
+            }
+          }, 1000);
+        } else {
+          clearInterval(timo2);
         }
-        hourleft = Math.floor(difi / 1000 / 60 / 60);
-        console.log('hourleft: ', hourleft);
-        minleft = Math.floor((difi - hourleft * 1000 * 60 * 60) / 1000 / 60);
-        console.log('minleft: ', minleft);
       } else {
-        canPrize = true;
-      }
-      if (canPrize) {
         btStr += `
           <button class="tBtn" id="finale">Kérem a Jutalmat!</button>
         `;
-      } else {
-        let horuS = "";
-        if (hourleft > 0) horuS += hourleft + " óra : ";
-        horuS += minleft + " perc";
-        btStr += `
-          <button class="tBtn alter" id="countdown">Új jutalom ${horuS} múlva</button>
-        `;
       }
+
       btStr += `
         <button class="tBtn alter2" id="reset">Újrajátszás</button>
       `
@@ -144,7 +187,8 @@ function _load() {
   }
 
   function resetAct() {
-    console.log("ÚJRA");
+    clearTimeout(timo);
+    clearInterval(timo2);
     localStorage.setItem("levels", "1,1,1");
     szintek = localStorage.getItem("levels").split(",");
     for (let i = 0; i < szintek.length; i++) {
@@ -160,13 +204,12 @@ function _load() {
       localStorage.setItem("records", rekord.join());
       rt += `<p>Új rekord, gratula!!!</p>`;
     }
-    nl = nextl[game][lvl[game] - 1];
+    let nl = nextl[game][lvl[game] - 1];
     if (score < nl) {
-      let nl = nextl[game][lvl[game] - 1];
       rt += `<p>A következő (${nlname[lvl[game]]}) szintre ${nl} ponttal juthatsz el.</p>`;
     } else {
       lvl[game]++;
-      if (lvl[game] == 4) {
+      if (lvl[game] >= 4) {
         rt += "<p>Ezzel kimaxoltad a " + gname[game] + "t! " + checkEnd() + "</p>";
       } else {
         rt += `<p>Ezzel elérted a következő (${nlname[lvl[game] - 1]}) szintet!</p>`;
@@ -186,15 +229,14 @@ function _load() {
     return eStr;
   }
 
-  //TODO: navbar minden Act-ba
-  //TODO: háttérszínek
-  //TODO: finálé után resetelni lehet a leveleket
-
   function mineAct() {
     document.body.requestFullscreen();
+    clearTimeout(timo);
+    clearInterval(timo2);
     el("opening").innerHTML = "";
     music.src = "./audio/music1.mp3";
     if (musicOn) music.play();
+    if (lvl[0] > 3) lvl[0] = 3;
     let level = lvl[0];
     let steps = 0;
     let zs = 1 + Math.floor(Math.random() * 8);
@@ -289,7 +331,6 @@ function _load() {
 
     function pressMine(e) {
       let ms = e.target.id.split("_")[1];
-      console.log("ms: ", ms);
       let mineX = Number(ms.split("-")[0]);
       let mineY = Number(ms.split("-")[1]);
       if (field[mineX][mineY][0] === true) return;
@@ -353,9 +394,12 @@ function _load() {
 
   function memAct() {
     document.body.requestFullscreen();
+    clearTimeout(timo);
+    clearInterval(timo2);
     el("opening").innerHTML = "";
     music.src = "./audio/music2.mp3";
     if (musicOn) music.play();
+    if (lvl[1] > 3) lvl[1] = 3;
     let level = lvl[1];
     let score = 0;
     let steps = 0;
@@ -380,7 +424,6 @@ function _load() {
         num++;
       }
     }
-    console.log("field: ", field);
     el("header").innerHTML = `
       <h2>ZSUZSIMEMO</h2>
       <h3>Szint: ${nlname[level - 1]}</h3>
@@ -490,9 +533,12 @@ function _load() {
 
   function quizAct() {
     document.body.requestFullscreen();
+    clearTimeout(timo);
+    clearInterval(timo2);
     el("opening").innerHTML = "";
     music.src = "./audio/music3.mp3";
     if (musicOn) music.play();
+    if (lvl[2] > 3) lvl[2] = 3;
     let level = lvl[2];
     let score = 0;
     let goal = 4 + level;
@@ -526,7 +572,6 @@ function _load() {
 
     function pressQuiz(e) {
       let answer = e.target.id;
-      console.log('answer: ', answer);
       if (answer == aa[0]) {
         voice("right");
         score++;
@@ -542,7 +587,7 @@ function _load() {
           voice("happy3");
           let mes = `<p>Gratulálok! Sikerült minden kérdést helyesen megválaszolnod!</p>`
           lvl[2]++;
-          if (lvl[2] == 4) {
+          if (lvl[2] >= 4) {
             mes += "<p>Ezzel kimaxoltad Zsuzsikvízt! " + checkEnd() + "</p>";
           } else {
             mes += `<p>Ezzel továbbjutottál következő (${nlname[lvl[2] - 1]}) szintre!</p>`;
@@ -595,10 +640,11 @@ function _load() {
   }
 
   function finalAct() {
+    clearInterval(timo2);
     let prizes = [
       "Egy nagy ölelés",
-      "Három puszi",
-      "Egy perces simogatás",
+      "Sok finom puszi mindenhova",
+      "Pár perces simogatás",
       "Közös koccintás",
       "Kézenfogva séta",
       "Egy-egy apró ajándék egymásnak",
@@ -611,18 +657,23 @@ function _load() {
       "Szabad Gergő kívánság",
       "Segítség valamiben, akinek jobban kell",
       "Gergő megborotvál valakit",
-      "Nyugodt, veszekedésmentes 3 óra",
+      "Nincs veszekedés a következő jutalomig",
       "Mondjatok 1-1 viccet!",
-      "Üljön Zsuzsi Gergő ölébe!"
+      "Üljön Zsuzsi Gergő ölébe!",
+      "Egy-egy intim kívánság",
+      "Egymás mellett ülés összeölelkezve"
     ];
     let prize = rnd(prizes);
+    voice("spell");
     let pStr = `
       <p>A jutalmad:</p>
       <div class="prize">${prize}</div>
-      <p><i>BOLDOG 25. HÁZASSÁGI ÉVFORDULÓT!</i></p>
+      <p id="happy">BOLDOG 25. HÁZASSÁGI ÉVFORDULÓT!</p>
     `;
-    let prizeTime = new Date().getTime();
-    localStorage.setItem("prize", prizeTime);
+
+    let nowTime = new Date().getTime();
+    let renewTime = nowTime + 60000 + Math.round(Math.random() * 3 * 60 * 60 * 1000);
+    localStorage.setItem("newprize", renewTime);
     message(pStr);
   }
 
