@@ -18,10 +18,10 @@ function _load() {
 
   let lvl = [1, 1, 1];
   let nextl = [
-    [20, 40, 56],
-    [6, 18, 50],
+    [20, 42, 56],
+    [6, 17, 52],
   ];
-  const nlname = ["kezdő", "haladó", "mester", "Kimaxolva!", "Kimaxolva!", "Kimaxolva!"];
+  const nlname = ["kezdő", "haladó", "mester", "Kimaxolva!", "Kimaxolva!"];
   const gname = ["Zsuzsikereső", "Zsuzsimemo", "Zsuzsikvíz"]
   const startid = ["mineStart", "memStart", "quizStart"]
   let score = 0;
@@ -212,7 +212,7 @@ function _load() {
       if (lvl[game] >= 4) {
         rt += "<p>Ezzel kimaxoltad a " + gname[game] + "t! " + checkEnd() + "</p>";
       } else {
-        rt += `<p>Ezzel elérted a következő (${nlname[lvl[game] - 1]}) szintet!</p>`;
+        rt += `<p>Ezzel elérted a ${nlname[lvl[game] - 1]} szintet!</p>`;
       }
 
       localStorage.setItem("levels", lvl.join());

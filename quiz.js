@@ -86,7 +86,7 @@ window.quiz = [
     {
         lvl: 1,
         q: "Melyik kvízműsorban nyert Zsuzsi a legtöbbet?",
-        a: ["Pókerarc", "Legyen ön is milliomos", "100-ból 1", "Játék a betűkkel"],
+        a: ["Pókerarc", "Legyen ön is milliomos", "Maradj talpon!", "Játék a betűkkel"],
         win: false
     },
     {
@@ -204,7 +204,7 @@ window.quiz = [
         win: false
     },
     {
-        lvl: 2,
+        lvl: 1,
         q: "Melyik könyvet kellett volna odaadni Margó néninek, hogy előreengedjen a sorban az ebédlőnél?",
         a: ["Sicc", "Egészségetekre, mert nincs hely!", "Az előretolt helyőrség", "Ablak Zsiráf"],
         win: false
@@ -230,7 +230,7 @@ window.quiz = [
     {
         lvl: 3,
         q: "Mi a neve a Gergő által fejlesztett bejegyzett Agilis tréningnek?",
-        a: ["Agile fun: the mentals", "Work Simulation Made Fun", "Impediment Killer", "Boost Your Team Dynamics"],
+        a: ["Agile Fun: the Mentals", "Work Simulation Made Fun", "Impediment Killer", "Boost Your Team Dynamics"],
         win: false
     },
     {
