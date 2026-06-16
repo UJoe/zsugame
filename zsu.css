@@ -396,6 +396,7 @@ h3 {
   flex-wrap: nowrap;
   justify-content: flex-end;
   height: 5vw;
+  min-height: fit-content;
   position: fixed;
   top: 0;
   left: 0;
@@ -404,9 +405,13 @@ h3 {
 
 .topBtns {
   padding: 2px 1vw 2px 2px;
-  margin: 1px;
-  height: calc(5vw-6px);
-  width: calc(5vw-6px);
+  margin: 2px;
+  height: calc(5vw - 8px);
+  width: calc(5vw - 8px);
+  min-width: 26px;
+  min-height: 26px;
+  max-width: 58px;
+  max-height: 58px;
   border: 2px outset lightcyan;
   border-radius: 5px;
   outline: none;
