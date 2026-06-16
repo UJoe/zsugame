@@ -224,7 +224,7 @@ window.quiz = [
     {
         lvl: 1,
         q: "Mit mondtak egymásnak Zsuzsi, Gergő és Szabó Levi a matekjavítók előtt?",
-        a: ["Ko-operáció", "Szeretjük Révfyt", "Kell az ötös", "MOst meglesz!"],
+        a: ["Ko-operáció", "Szeretjük Révfyt", "Kell az ötös", "Most meglesz!"],
         win: false
     },
     {
@@ -275,4 +275,16 @@ window.quiz = [
         a: ["Zsuzsa Szimfónia", "Zsuzsi Symphony", "Rózsaszál Kantáta", "Néked dalol hű szívem"],
         win: false
     },
+    {
+        lvl: 2,
+        q: "Mi Gergő blogjának a címe?",
+        a: ["Hétköznapi Hitvédelem", "Mindennapi Hitvédelem", "Nem érdekel!", "Végső Kinyilatkoztatások"],
+        win: false
+    },
+    {
+        lvl: 1,
+        q: "Melyik lakodalmát ünnepli Zsuzsi és Gergő 2026-ban?",
+        a: ["ezüst", "arany", "bronz", "bauxit"],
+        win: false
+    }
 ]

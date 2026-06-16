@@ -521,7 +521,7 @@ function _load() {
             .querySelectorAll(".minefield")
             .forEach((i) => i.addEventListener("click", pressMem));
           sels = [];
-        }, 1800)
+        }, 1650)
       }
     }
 
