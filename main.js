@@ -627,7 +627,7 @@ function _load() {
       }
 
       el("main").innerHTML = `
-      <div id="qq">(${score}/${goal}): ${qq}</div>
+      <div id="qq">(${score + 1}/${goal}): ${qq}</div>
       <div id="aBtns">${bStr}</div>
     `;
 
