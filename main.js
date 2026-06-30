@@ -606,7 +606,7 @@ function _load() {
       } else {
         let wr = Math.floor(Math.random() * 6);
         voice("wrong" + wr);
-        let wts = ["Mégis hogy gondoltad ezt?!", "Ezt vesd jobban górcső alá!", "Hát... ennél azért jobbra számítottam!", "Ezen gondolkozz még egy kicsit...", "Hát ez kész! Komolyan...", "Bzzz, falsch!"];
+        let wts = ["Nana! Hogy is van ez?", "Ezt vesd jobban górcső alá!", "Hínye... ez most nem jött be.", "Ezen gondolkozz még egy kicsit...", "Ez most nem sikerült. De ne add fel, ügyes vagy!", "Bzzz, falsch!"];
         let wt = wts[wr];
         document
           .querySelectorAll(".aBtn")
