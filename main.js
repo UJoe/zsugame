@@ -22,8 +22,9 @@ function _load() {
     [6, 17, 52],
   ];
   const nlname = ["kezdő", "haladó", "mester", "Kimaxolva!", "Kimaxolva!"];
-  const gname = ["Zsuzsikereső", "Zsuzsimemo", "Zsuzsikvíz"]
-  const startid = ["mineStart", "memStart", "quizStart"]
+  const nlcol = ["blue", "fuchsia", "red"];
+  const gname = ["Zsuzsikereső", "Zsuzsimemo", "Zsuzsikvíz"];
+  const startid = ["mineStart", "memStart", "quizStart"];
   let score = 0;
   let rekord = [0, 0, 0];
   if (localStorage.getItem("records")) {
@@ -191,6 +192,7 @@ function _load() {
     clearInterval(timo2);
     localStorage.setItem("levels", "1,1,1");
     szintek = localStorage.getItem("levels").split(",");
+    localStorage.removeItem('newprize');
     for (let i = 0; i < szintek.length; i++) {
       lvl[i] = parseInt(szintek[i]);
     }
@@ -301,7 +303,7 @@ function _load() {
 
     el("header").innerHTML = `
       <h2>ZSUZSIKERESŐ</h2>
-      <h3>Szint: ${nlname[level - 1]}</h3>
+      <h3>Szint: <span style="color: ${nlcol[level - 1]};">${nlname[level - 1]}</span> | Rekord: <span class="gold">${rekord[0]}</span></h3>
     `;
     el("main").innerHTML = `
         <div id="subHeader">
@@ -426,7 +428,7 @@ function _load() {
     }
     el("header").innerHTML = `
       <h2>ZSUZSIMEMO</h2>
-      <h3>Szint: ${nlname[level - 1]}</h3>
+      <h3>Szint: <span style="color: ${nlcol[level - 1]};">${nlname[level - 1]}</span> | Rekord: <span class="gold">${rekord[1]}</span></h3>
     `;
     el("main").innerHTML = `
         <div id="subHeader">
@@ -521,7 +523,7 @@ function _load() {
             .querySelectorAll(".minefield")
             .forEach((i) => i.addEventListener("click", pressMem));
           sels = [];
-        }, 1650)
+        }, 1500)
       }
     }
 
@@ -567,7 +569,7 @@ function _load() {
     let [qq, aa] = [question.q, question.a];
     el("header").innerHTML = `
       <h2>ZSUZSIKVÍZ</h2>
-      <h3>Szint: ${nlname[level - 1]}</h3>
+      <h3>Szint: <span style="color: ${nlcol[level - 1]};">${nlname[level - 1]}</span></h3>
     `;
 
     function pressQuiz(e) {
